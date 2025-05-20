@@ -22,12 +22,22 @@ public class DBService {
     }
 
     public List<Movie> getAllMovies() throws SQLException{
+        return processQuery(String.format(GET_ALL_MOVIES_SQL));
+    }
+    public List<Movie> getMovieByName(String name) throws SQLException{
+        return processQuery(String.format(GET_MOVIES_BY_NAME+"%s",name));
+    }
+    public List<Movie> getMovieByGenre(String genre) throws SQLException{
+        return processQuery(String.format(GET_MOVIES_BY_GENRE+"%s",genre));
+    }
+
+    private List<Movie> processQuery(String query) throws SQLException{
         List<Movie> movies = new ArrayList<>();
         try(Connection conn = movieDS.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(GET_ALL_MOVIES_SQL);
+            ResultSet rs = stmt.executeQuery(query)
         ){
-            while (rs.next()) {
+            while (rs.next()){
                 movies.add(new Movie(
                         rs.getString("MovieName"),
                         rs.getString("MovieDesc"),
@@ -38,6 +48,4 @@ public class DBService {
         }
         return movies;
     }
-
-
 }
