@@ -3,6 +3,13 @@ public class Movie {
     private String movieDesc;
     private Genre movieGenre;
     private int movieRuntime;
+    Movie(){}
+    Movie(String movieName, String MovieDesc, Genre movieGenre, int movieRuntime){
+        this.movieName = movieName;
+        this.movieDesc = MovieDesc;
+        this.movieGenre = movieGenre;
+        this.movieRuntime = movieRuntime;
+    }
 
     public String getMovieName() {
         return movieName;

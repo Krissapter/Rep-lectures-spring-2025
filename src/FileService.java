@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MovieService {
+public class FileService {
     public void getMoviesFromFile(String filename) throws FileNotFoundException {
         File file = new File(filename);
         ArrayList<Movie> movies = new ArrayList<>();
