@@ -7,8 +7,10 @@ import java.util.List;
 public class DBService {
 
     private final static String GET_ALL_MOVIES_SQL = "SELECT * FROM movies";
-    private final static String GET_MOVIES_BY_NAME = "SELECT * FROM movies WHERE MovieName=";
-    private final static String GET_MOVIES_BY_GENRE = "SELECT * FROM movies WHERE MovieGenre=";
+    private final static String GET_MOVIES_BY_NAME = "SELECT * FROM movies WHERE MovieName = ?";
+    private final static String GET_MOVIES_BY_GENRE = "SELECT * FROM movies WHERE MovieGenre = ?";
+
+    private final static  String INSERT_MOVIE = "INSERT INTO movies VALUES (?,?,?,?)";
 
     private final MysqlDataSource movieDS;
 
@@ -22,28 +24,44 @@ public class DBService {
     }
 
     public List<Movie> getAllMovies() throws SQLException{
-        return processQuery(String.format(GET_ALL_MOVIES_SQL));
+        return processQuery(GET_ALL_MOVIES_SQL, null);
     }
     public List<Movie> getMovieByName(String name) throws SQLException{
-        return processQuery(String.format(GET_MOVIES_BY_NAME+"%s",name));
+        return processQuery(GET_MOVIES_BY_NAME, name);
     }
     public List<Movie> getMovieByGenre(String genre) throws SQLException{
-        return processQuery(String.format(GET_MOVIES_BY_GENRE+"%s",genre));
+        return processQuery(GET_MOVIES_BY_GENRE, genre);
     }
 
-    private List<Movie> processQuery(String query) throws SQLException{
+    public void InsertMovie(Movie movie) throws SQLException{
+        try (Connection conn = movieDS.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(INSERT_MOVIE)
+        ) {
+            stmt.setString(1, movie.getMovieName());
+            stmt.setString(2, movie.getMovieDesc());
+            stmt.setString(3, String.valueOf(movie.getMovieGenre()));
+            stmt.setInt(4, movie.getMovieRuntime());
+        }
+    }
+
+    private List<Movie> processQuery(String query, String column) throws SQLException{
         List<Movie> movies = new ArrayList<>();
         try(Connection conn = movieDS.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query)
+            PreparedStatement stmt = conn.prepareStatement(query)
+
         ){
-            while (rs.next()){
-                movies.add(new Movie(
-                        rs.getString("MovieName"),
-                        rs.getString("MovieDesc"),
-                        Genre.valueOf(rs.getString("MovieGenre")),
-                        rs.getInt("MovieRuntime")
-                ));
+            if (column != null){
+                stmt.setString(1, column);
+            }
+            try(ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    movies.add(new Movie(
+                            rs.getString("MovieName"),
+                            rs.getString("MovieDescription"),
+                            Genre.valueOf(rs.getString("MovieGenre")),
+                            rs.getInt("MovieRuntime")
+                    ));
+                }
             }
         }
         return movies;

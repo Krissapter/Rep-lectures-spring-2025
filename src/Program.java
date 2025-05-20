@@ -6,6 +6,11 @@ public class Program {
     FileService ms = new FileService();
     DBService dbService = new DBService();
     public void run(){
+        try {
+            ms.getMoviesFromFile("files/movies.txt");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         int choice = 0;
         Scanner input = new Scanner(System.in);
         while(choice != 5){
@@ -38,18 +43,23 @@ public class Program {
                     System.out.println("Please pick a valid option");
             }
         }
-
-
-        try {
-            ms.getMoviesFromFile("files/movies.txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-
     }
     public void newEntry(){
-        System.out.println("Not supported yet");
+        try {
+            Movie movie = new Movie();
+            Scanner input = new Scanner(System.in);
+            System.out.println("Enter movie name");
+            movie.setMovieName(input.nextLine());
+            System.out.println("Enter movie description");
+            movie.setMovieDesc(input.nextLine());
+            System.out.println("Enter movie genre");
+            movie.setMovieGenre(Genre.valueOf(input.nextLine().toUpperCase()));
+            System.out.println("Enter movie runtime in minutes");
+            movie.setMovieRuntime(input.nextInt());
+            dbService.InsertMovie(movie);
+        }catch (SQLException e){
+            System.out.println("Unable to add movie to database.\n" + e);
+        }
     }
     public void getAllMovies(){
         try{
@@ -68,18 +78,18 @@ public class Program {
                 System.out.println(m);
             }
         } catch (SQLException e) {
-            System.out.println("No movies with that name was found");
+            System.out.println("No movies with that name was found" + e);
         }
     }
     public void getMovieByGenre(){
         try{
             Scanner input = new Scanner(System.in);
-            String genre = input.nextLine();
+            String genre = input.nextLine().toUpperCase();
             for(Movie m : dbService.getMovieByGenre(genre)){
                 System.out.println(m);
             }
         } catch (SQLException e) {
-            System.out.println("No move with that genre was found");
+            System.out.println("No movies with that genre was found"+ e);
         }
     }
 }
