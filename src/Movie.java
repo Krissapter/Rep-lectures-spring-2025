@@ -34,4 +34,14 @@ public class Movie {
     public void setMovieRuntime(int movieRuntime) {
         this.movieRuntime = movieRuntime;
     }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "movieName='" + movieName + '\'' +
+                ", movieDesc='" + movieDesc + '\'' +
+                ", genre=" + genre +
+                ", movieRuntime=" + movieRuntime +
+                '}';
+    }
 }
