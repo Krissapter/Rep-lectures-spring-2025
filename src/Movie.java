@@ -4,6 +4,15 @@ public class Movie {
     private Genre genre;
     private int movieRuntime;
 
+    public Movie(){}
+
+    public Movie(String name, String desc, Genre genre, int runtime){
+        this.movieName = name;
+        this.movieDesc = desc;
+        this.genre = genre;
+        this.movieRuntime = runtime;
+    }
+
     public String getMovieName() {
         return movieName;
     }
