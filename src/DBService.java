@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBService {
-    private final static String GET_ALL_MOVIES = "SELECT * FROM movies";
-    private final static String GET_MOVIES_BY_NAME = "SELECT * FROM movies WHERE MovieName = ?";
-    private final static String GET_MOVIES_BY_GENRE = "SELECT * FROM movies WHERE MovieGenre = ?";
+    private final static String GET_ALL_MOVIES = "SELECT * FROM movie";
+    private final static String GET_MOVIES_BY_NAME = "SELECT * FROM movie WHERE MovieName = ?";
+    private final static String GET_MOVIES_BY_GENRE = "SELECT * FROM movie WHERE MovieGenre = ?";
 
-    private final static String INSERT_MOVIE = "INSERT INTO movies VALUES (?, ?, ?, ?)";
+    private final static String INSERT_MOVIE = "INSERT INTO movie VALUES (?, ?, ?, ?)";
 
     private final MysqlDataSource movieDS;
     public DBService(){
@@ -38,6 +38,7 @@ public class DBService {
          stmt.setString(2, movie.getMovieDesc());
          stmt.setString(3, String.valueOf(movie.getGenre()));
          stmt.setInt(4, movie.getMovieRuntime());
+         stmt.executeUpdate();
         }
     }
     public List<Movie> processQuery(String query, String column)throws SQLException{
